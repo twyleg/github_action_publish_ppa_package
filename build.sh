@@ -109,7 +109,10 @@ for s in $SERIES; do
     #     -k"$GPG_KEY_ID" \
     #     -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
 
-    gbp buildpackage --git-builder="dpkg-buildpackage" -S -sa \
+    gbp buildpackage \
+        --git-builder="dpkg-buildpackage" \
+        --git-upstream-tag=$UPSTREAM_VERSION
+        -S -sa \
         -k"$GPG_KEY_ID" \
         -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
 
