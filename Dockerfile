@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:oracular
 
 ENV DEBIAN_FRONTEND noninteractive
 
