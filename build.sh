@@ -3,6 +3,7 @@
 set -o errexit -o pipefail -o nounset
 
 REPOSITORY=$INPUT_REPOSITORY
+UPSTREAM_VERSION=$INPUT_UPSTREAM_VERSION
 GPG_PRIVATE_KEY="$INPUT_GPG_PRIVATE_KEY"
 GPG_PASSPHRASE=$INPUT_GPG_PASSPHRASE
 TARBALL=$INPUT_TARBALL
@@ -70,40 +71,45 @@ if [[ -n "$INPUT_EXTRA_SERIES" ]]; then
     SERIES="$INPUT_EXTRA_SERIES $SERIES"
 fi
 
-mkdir -p /tmp/workspace/source
-cp $TARBALL /tmp/workspace/source
-if [[ -n $DEBIAN_DIR ]]; then
-    cp -r $DEBIAN_DIR /tmp/workspace/debian
-fi
+# mkdir -p /tmp/workspace/source
+# cp $TARBALL /tmp/workspace/source
+# if [[ -n $DEBIAN_DIR ]]; then
+#     cp -r $DEBIAN_DIR /tmp/workspace/debian
+# fi
 
 for s in $SERIES; do
     ubuntu_version=$(distro-info --series $s -r | cut -d' ' -f1)
 
     echo "::group::Building deb for: $ubuntu_version ($s)"
     
-    cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
-    tar -xf * && cd */
+    # cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
+    # tar -xf * && cd */
 
-    echo "Making non-native package..."
-    debmake
+    # echo "Making non-native package..."
+    # debmake
 
-    if [[ -n $DEBIAN_DIR ]]; then
-        cp -r /tmp/$s/debian/* debian/
-    fi
+    # if [[ -n $DEBIAN_DIR ]]; then
+    #     cp -r /tmp/$s/debian/* debian/
+    # fi
 
     # Extract the package name from the debian changelog
     package=$(dpkg-parsechangelog --show-field Source)
-    pkg_version=$(dpkg-parsechangelog --show-field Version | cut -d- -f1)
+    # pkg_version=$(dpkg-parsechangelog --show-field Version | cut -d- -f1)
+    pkg_version=$UPSTREAM_VERSION
     changes="New upstream release"
 
     # Create the debian changelog
     rm -rf debian/changelog
-    dch --create --distribution $s --package $package --newversion $pkg_version-ppa$REVISION~ubuntu$ubuntu_version "$changes"
+    dch --create --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
 
     # Install build dependencies
     mk-build-deps --install --remove --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
 
-    debuild -S -sa \
+    # debuild -S -sa \
+    #     -k"$GPG_KEY_ID" \
+    #     -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
+
+    gbp buildpackage --git-builder="dpkg-buildpackage" -S -sa \
         -k"$GPG_KEY_ID" \
         -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
 
