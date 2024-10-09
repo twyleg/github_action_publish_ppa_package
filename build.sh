@@ -51,14 +51,14 @@ echo "::endgroup::"
 
 echo "::group::Adding PPA..."
 echo "Adding PPA: $REPOSITORY"
-add-apt-repository -y ppa:$REPOSITORY
+add-apt-repository -y ppa:$REPOSITORY || true
 # Add extra PPA if it's been set
-if [[ -n "$EXTRA_PPA" ]]; then
-    for ppa in $EXTRA_PPA; do
-        echo "Adding PPA: $ppa"
-        add-apt-repository -y ppa:$ppa
-    done
-fi
+# if [[ -n "$EXTRA_PPA" ]]; then
+#     for ppa in $EXTRA_PPA; do
+#         echo "Adding PPA: $ppa"
+#         add-apt-repository -y ppa:$ppa
+#     done
+# fi
 apt-get update || true
 echo "::endgroup::"
 
