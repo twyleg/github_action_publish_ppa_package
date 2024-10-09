@@ -59,7 +59,7 @@ if [[ -n "$EXTRA_PPA" ]]; then
         add-apt-repository -y ppa:$ppa
     done
 fi
-apt-get update
+apt-get update || true
 echo "::endgroup::"
 
 if [[ -z "$SERIES" ]]; then
