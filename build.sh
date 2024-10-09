@@ -67,9 +67,9 @@ if [[ -z "$SERIES" ]]; then
 fi
 
 # Add extra series if it's been set
-if [[ -n "$INPUT_EXTRA_SERIES" ]]; then
-    SERIES="$INPUT_EXTRA_SERIES $SERIES"
-fi
+# if [[ -n "$INPUT_EXTRA_SERIES" ]]; then
+#     SERIES="$INPUT_EXTRA_SERIES $SERIES"
+# fi
 
 # mkdir -p /tmp/workspace/source
 # cp $TARBALL /tmp/workspace/source
@@ -81,6 +81,9 @@ for s in $SERIES; do
     ubuntu_version=$(distro-info --series $s -r | cut -d' ' -f1)
 
     echo "::group::Building deb for: $ubuntu_version ($s)"
+
+    pwd
+    ls -la
     
     # cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
     # tar -xf * && cd */
