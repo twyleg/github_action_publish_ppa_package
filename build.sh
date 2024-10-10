@@ -77,6 +77,8 @@ fi
 #     cp -r $DEBIAN_DIR /tmp/workspace/debian
 # fi
 
+git config --global --add safe.directory /github/workspace
+
 for s in $SERIES; do
     ubuntu_version=$(distro-info --series $s -r | cut -d' ' -f1)
 
