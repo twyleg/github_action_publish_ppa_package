@@ -84,6 +84,7 @@ for s in $SERIES; do
 
     pwd
     ls -la
+    git status
     
     # cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
     # tar -xf * && cd */
