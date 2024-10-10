@@ -88,6 +88,7 @@ for s in $SERIES; do
     ls -la
     git status
     git tag --list
+    gpg --help
     
     # cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
     # tar -xf * && cd */
