@@ -117,7 +117,6 @@ for s in $SERIES; do
     #     -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
 
     gbp buildpackage \
-        --git-builder="dpkg-buildpackage" \
         --git-upstream-tag=$UPSTREAM_VERSION \
         --git-ignore-new \ 
         -S -sa \
