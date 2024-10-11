@@ -117,10 +117,18 @@ for s in $SERIES; do
     #     -k"$GPG_KEY_ID" \
     #     -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
 
+    # gbp buildpackage \
+    #     --git-upstream-tag=$UPSTREAM_VERSION \
+    #     --git-ignore-new \
+    #     --git-builder="dpkg-buildpackage -S -sa -k'$GPG_KEY_ID' -p'gpg --batch --passphrase '$GPG_PASSPHRASE''"
+
     gbp buildpackage \
-        --git-upstream-tag=$UPSTREAM_VERSION \
-        --git-ignore-new \
-        --git-builder="dpkg-buildpackage -S -sa -k'$GPG_KEY_ID' -p'gpg --batch --passphrase '$GPG_PASSPHRASE''"
+       --git-upstream-tag=$UPSTREAM_VERSION \
+       --git-ignore-new \
+       --git-builder="debuild" -S -sa \
+       -k"$GPG_KEY_ID" \
+       -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
+
 
     dput ppa:$REPOSITORY ../*.changes
 
