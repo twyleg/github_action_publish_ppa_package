@@ -124,7 +124,6 @@ for s in $SERIES; do
 
     gbp buildpackage \
        --git-upstream-tag=$UPSTREAM_VERSION \
-       --git-tag \
        --git-ignore-new \
        --git-builder="debuild" -S -sa \
        -k"$GPG_KEY_ID" \
