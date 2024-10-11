@@ -90,8 +90,8 @@ for s in $SERIES; do
     pkg_version=$UPSTREAM_VERSION
     changes="New upstream release"
 
-    # Create the debian changelog
-    dch --append --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
+    # Update the debian changelog
+    dch --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
     cat debian/changelog
 
     # Install build dependencies
