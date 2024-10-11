@@ -84,22 +84,6 @@ for s in $SERIES; do
 
     echo "::group::Building deb for: $ubuntu_version ($s)"
 
-    pwd
-    ls -la
-    git status
-    git tag --list
-    gpg --help
-    
-    # cp -r /tmp/workspace /tmp/$s && cd /tmp/$s/source
-    # tar -xf * && cd */
-
-    # echo "Making non-native package..."
-    # debmake
-
-    # if [[ -n $DEBIAN_DIR ]]; then
-    #     cp -r /tmp/$s/debian/* debian/
-    # fi
-
     # Extract the package name from the debian changelog
     package=$(dpkg-parsechangelog --show-field Source)
     # pkg_version=$(dpkg-parsechangelog --show-field Version | cut -d- -f1)
@@ -109,6 +93,7 @@ for s in $SERIES; do
     # Create the debian changelog
     rm -rf debian/changelog
     dch --create --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
+    cat debian/changelog
 
     # Install build dependencies
     mk-build-deps --install --remove --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
