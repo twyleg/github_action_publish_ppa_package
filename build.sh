@@ -91,8 +91,7 @@ for s in $SERIES; do
     changes="New upstream release"
 
     # Create the debian changelog
-    rm -rf debian/changelog
-    dch --create --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
+    dch --append --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
     cat debian/changelog
 
     # Install build dependencies
