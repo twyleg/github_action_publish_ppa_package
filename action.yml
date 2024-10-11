@@ -4,6 +4,9 @@ branding:
   color: orange
   icon: package
 inputs:
+  package:
+    description: 'Package name'
+    required: true
   repository:
     description: 'The PPA repository, e.g., "yuezk/globalprotect-openconnect"'
     required: true
