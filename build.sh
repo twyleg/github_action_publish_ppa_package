@@ -2,18 +2,15 @@
 
 set -o errexit -o pipefail -o nounset
 
+PACKAGE=$INPUT_PACKAGE
 REPOSITORY=$INPUT_REPOSITORY
 UPSTREAM_VERSION=$INPUT_UPSTREAM_VERSION
 GPG_PRIVATE_KEY="$INPUT_GPG_PRIVATE_KEY"
 GPG_PASSPHRASE=$INPUT_GPG_PASSPHRASE
-TARBALL=$INPUT_TARBALL
-DEBIAN_DIR=$INPUT_DEBIAN_DIR
 SERIES=$INPUT_SERIES
 REVISION=$INPUT_REVISION
 DEB_EMAIL=$INPUT_DEB_EMAIL
 DEB_FULLNAME=$INPUT_DEB_FULLNAME
-# Extra ppa separated by space
-EXTRA_PPA=$INPUT_EXTRA_PPA
 
 assert_non_empty() {
     name=$1
@@ -24,10 +21,11 @@ assert_non_empty() {
     fi
 }
 
+assert_non_empty inputs.package "$PACKAGE"
 assert_non_empty inputs.repository "$REPOSITORY"
+assert_non_empty inputs.upstream_version "$UPSTREAM_VERSION"
 assert_non_empty inputs.gpg_private_key "$GPG_PRIVATE_KEY"
 assert_non_empty inputs.gpg_passphrase "$GPG_PASSPHRASE"
-assert_non_empty inputs.tarball "$TARBALL"
 assert_non_empty inputs.deb_email "$DEB_EMAIL"
 assert_non_empty inputs.deb_fullname "$DEB_FULLNAME"
 
@@ -52,30 +50,12 @@ echo "::endgroup::"
 echo "::group::Adding PPA..."
 echo "Adding PPA: $REPOSITORY"
 add-apt-repository -y ppa:$REPOSITORY || true
-# Add extra PPA if it's been set
-# if [[ -n "$EXTRA_PPA" ]]; then
-#     for ppa in $EXTRA_PPA; do
-#         echo "Adding PPA: $ppa"
-#         add-apt-repository -y ppa:$ppa
-#     done
-# fi
 apt-get update || true
 echo "::endgroup::"
 
 if [[ -z "$SERIES" ]]; then
     SERIES=$(distro-info --supported)
 fi
-
-# Add extra series if it's been set
-# if [[ -n "$INPUT_EXTRA_SERIES" ]]; then
-#     SERIES="$INPUT_EXTRA_SERIES $SERIES"
-# fi
-
-# mkdir -p /tmp/workspace/source
-# cp $TARBALL /tmp/workspace/source
-# if [[ -n $DEBIAN_DIR ]]; then
-#     cp -r $DEBIAN_DIR /tmp/workspace/debian
-# fi
 
 git config --global --add safe.directory /github/workspace
 
@@ -84,27 +64,14 @@ for s in $SERIES; do
 
     echo "::group::Building deb for: $ubuntu_version ($s)"
 
-    # Extract the package name from the debian changelog
-    package=$(dpkg-parsechangelog --show-field Source)
-    # pkg_version=$(dpkg-parsechangelog --show-field Version | cut -d- -f1)
-    pkg_version=$UPSTREAM_VERSION
     changes="New upstream release"
 
     # Update the debian changelog
-    dch --distribution $s --package $package --newversion $pkg_version-$REVISION~ubuntu$ubuntu_version "$changes"
+    dch --distribution $s --package $PACKAGE --newversion $UPSTREAM_VERSION-$REVISION~ubuntu$ubuntu_version "$changes"
     cat debian/changelog
 
     # Install build dependencies
     mk-build-deps --install --remove --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
-
-    # debuild -S -sa \
-    #     -k"$GPG_KEY_ID" \
-    #     -p"gpg --batch --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback"
-
-    # gbp buildpackage \
-    #     --git-upstream-tag=$UPSTREAM_VERSION \
-    #     --git-ignore-new \
-    #     --git-builder="dpkg-buildpackage -S -sa -k'$GPG_KEY_ID' -p'gpg --batch --passphrase '$GPG_PASSPHRASE''"
 
     gbp buildpackage \
        --git-upstream-tag=$UPSTREAM_VERSION \
