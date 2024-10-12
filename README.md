@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Publish PPA
-      uses: twyleg/github_action_publish_ppa_package@v2.0.1
+      uses: twyleg/github_action_publish_ppa_package@v2
       with:
         ppa_package: "hello-world"
         ppa_repository: "twyleg/ppa"
