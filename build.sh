@@ -51,7 +51,7 @@ git clone $GITURL .
 
 git fetch --tags origin debian/latest
 git checkout debian/latest
-git pull --commit --no-edit origin master
+git pull --commit --no-edit origin $UPSTREAM_VERSION
 
 echo "::endgroup::"
 
