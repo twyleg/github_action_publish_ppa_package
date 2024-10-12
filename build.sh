@@ -83,7 +83,7 @@ for s in $SERIES; do
 
     dput ppa:$REPOSITORY ../*.changes
 
-    echo "Uploaded $package to $REPOSITORY"
+    echo "Uploaded $PACKAGE to $REPOSITORY"
 
     echo "::endgroup::"
 done
