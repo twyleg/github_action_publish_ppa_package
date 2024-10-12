@@ -16,9 +16,6 @@ inputs:
   ppa_repository:
     description: 'The PPA repository, e.g., "yuezk/globalprotect-openconnect"'
     required: true
-  upstream_version:
-    description: 'Upstream version.'
-    required: true
   gpg_private_key:
     description: 'GPG private key exported as an ASCII armored version or its base64 encoding'
     required: true
@@ -38,6 +35,9 @@ inputs:
     description: 'The revision of the package'
     required: false
     default: '1'
+  upstream_version:
+    description: 'Upstream version.'
+    required: true
 
 runs:
   using: docker
